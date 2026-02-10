@@ -1,0 +1,76 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/center/center",
+    "pages/course/course",
+    "pages/login/login",
+    "pages/login/login-phone"
+  ],
+  "subPackages": [
+    {
+      "root": "packs_other/",
+      "pages": [
+        "pages/videoPlayer/videoPlayer",
+        "pages/search/search",
+        "pages/search/search-result",
+        "pages/vip/vip",
+        "pages/history/history",
+        "pages/collcet/collect",
+        "pages/setting/setting",
+        "pages/setting/password/password",
+        "pages/userInfo/userInfo",
+        "pages/invitation/invitation",
+        "pages/invitation/invitation-vip/invitation-vip"
+      ]
+    },
+    {
+      "root": "packs_order/",
+      "pages": [
+        "pages/submit-order/submit-order",
+        "pages/paySuccess/paySuccess",
+        "pages/myOrder/myOrder"
+      ]
+    }
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "某某公司",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
+  },
+  "tabBar": {
+    "selectedColor": "#000",
+    "color": "#727272",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "首页",
+        "iconPath": "assets/images/tab-bar/home.png",
+        "selectedIconPath": "assets/images/tab-bar/home-act.png"
+      },
+      {
+        "pagePath": "pages/course/course",
+        "text": "课程",
+        "iconPath": "assets/images/tab-bar/course.png",
+        "selectedIconPath": "assets/images/tab-bar/course-act.png"
+      },
+      {
+        "pagePath": "pages/center/center",
+        "text": "我的",
+        "iconPath": "assets/images/tab-bar/my.png",
+        "selectedIconPath": "assets/images/tab-bar/my-act.png"
+      }
+    ]
+  },
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "header": "./components/header",
+    "load-more": "./components/load-more"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "useExtendedLib": {
+    "weui": true
+  }
+}
