@@ -1,5 +1,6 @@
 const FOOTER_HEIGHT = 220;
 const CANVAS_WIDTH = 750;
+const ADMIN_BASE_URL = 'http://127.0.0.1:8090';
 
 Page({
   data: {
@@ -40,7 +41,7 @@ Page({
   fetchPosters() {
     this.setData({ loading: true });
     wx.request({
-      url: '/res/poster/valid',
+      url: `${ADMIN_BASE_URL}/res/poster/valid`,
       method: 'GET',
       success: (res) => {
         const list = this.normalizePosterList(res.data);
@@ -58,6 +59,16 @@ Page({
     });
   },
 
+
+  formatPosterUrl(url) {
+    if (!url) {
+      return '';
+    }
+    if (/^https?:\/\//.test(url)) {
+      return url;
+    }
+    return `${ADMIN_BASE_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  },
   normalizePosterList(payload) {
     const source = Array.isArray(payload)
       ? payload
@@ -65,7 +76,7 @@ Page({
 
     return source
       .map((item, index) => {
-        const posterUrl = item.posterUrl || item.imageUrl || item.url || item.cover;
+        const posterUrl = this.formatPosterUrl(item.posterUrl || item.imageUrl || item.url || item.cover);
         if (!posterUrl) {
           return null;
         }
