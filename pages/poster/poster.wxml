@@ -1,16 +1,24 @@
 <view class="poster-page">
-  <view class="name-box">
-    <text class="label">用户名</text>
-    <input
-      class="name-input"
-      value="{{userName}}"
-      placeholder="请输入展示名称"
-      bindinput="onNameInput"
-    />
+  <view class="toolbar">
+    <view class="name-box">
+      <text class="label">用户名</text>
+      <input
+        class="name-input"
+        value="{{userName}}"
+        placeholder="请输入展示名称"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <view class="qr-box">
+      <button class="qr-btn" bindtap="onChooseQrImage">
+        {{qrUploaded ? '更换二维码' : '上传二维码'}}
+      </button>
+      <text class="qr-tip">先上传二维码，可重复用于生成多张海报名片</text>
+    </view>
   </view>
 
   <view wx:if="{{loading}}" class="loading">海报加载中...</view>
-
   <view wx:if="{{!loading && !posters.length}}" class="empty">暂无可用海报</view>
 
   <view wx:for="{{posters}}" wx:key="id" class="poster-card">
@@ -19,8 +27,10 @@
     <view class="actions">
       <button
         class="action-btn primary"
+        loading="{{generatingPosterId === item.id}}"
         data-poster-id="{{item.id}}"
         data-poster-url="{{item.posterUrl}}"
+        data-canvas-id="{{item.canvasId}}"
         bindtap="onGeneratePoster"
       >生成名片海报</button>
       <button
@@ -38,7 +48,7 @@
     />
 
     <canvas
-      canvas-id="posterCanvas{{item.id}}"
+      canvas-id="{{item.canvasId}}"
       style="width:750rpx;height:1400rpx;position:fixed;left:-9999px;top:-9999px;"
     />
   </view>

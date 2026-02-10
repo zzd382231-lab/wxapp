@@ -5,7 +5,10 @@ Page({
   data: {
     posters: [],
     loading: false,
+    generatingPosterId: '',
     userName: '',
+    qrPath: '',
+    qrUploaded: false,
     generatedPosters: {}
   },
 
@@ -19,8 +22,19 @@ Page({
 
   onNameInput(e) {
     this.setData({
-      userName: e.detail.value || ''
+      userName: (e.detail.value || '').trim()
     });
+  },
+
+  onChooseQrImage() {
+    this.chooseQrImage()
+      .then((path) => {
+        this.setData({
+          qrPath: path,
+          qrUploaded: true
+        });
+      })
+      .catch(() => {});
   },
 
   fetchPosters() {
@@ -57,15 +71,16 @@ Page({
         }
         return {
           id: item.id || item.posterId || `poster_${index}`,
-          posterUrl
+          posterUrl,
+          canvasId: `posterCanvas${index}`
         };
       })
       .filter(Boolean);
   },
 
   async onGeneratePoster(e) {
-    const { posterId, posterUrl } = e.currentTarget.dataset;
-    if (!posterUrl) {
+    const { posterId, posterUrl, canvasId } = e.currentTarget.dataset;
+    if (!posterUrl || !canvasId) {
       return;
     }
 
@@ -78,14 +93,25 @@ Page({
     }
 
     try {
-      const qrPath = await this.chooseQrImage();
+      this.setData({ generatingPosterId: posterId });
+
+      let qrPath = this.data.qrPath;
+      if (!qrPath) {
+        qrPath = await this.chooseQrImage();
+        this.setData({
+          qrPath,
+          qrUploaded: true
+        });
+      }
+
       wx.showLoading({ title: '正在生成' });
-      const tempPath = await this.buildPoster(posterUrl, qrPath, this.data.userName, posterId);
-      const generatedPosters = {
-        ...this.data.generatedPosters,
-        [posterId]: tempPath
-      };
-      this.setData({ generatedPosters });
+      const tempPath = await this.buildPoster(posterUrl, qrPath, this.data.userName, canvasId);
+      this.setData({
+        generatedPosters: {
+          ...this.data.generatedPosters,
+          [posterId]: tempPath
+        }
+      });
       wx.showToast({ title: '生成成功', icon: 'success' });
     } catch (error) {
       if (error && error.message !== 'USER_CANCEL') {
@@ -95,6 +121,7 @@ Page({
         });
       }
     } finally {
+      this.setData({ generatingPosterId: '' });
       wx.hideLoading();
     }
   },
@@ -144,13 +171,12 @@ Page({
     });
   },
 
-  async buildPoster(posterUrl, qrPath, userName, posterId) {
+  async buildPoster(posterUrl, qrPath, userName, canvasId) {
     const [poster, qr] = await Promise.all([
       this.getImageInfo(posterUrl),
       this.getImageInfo(qrPath)
     ]);
 
-    const canvasId = `posterCanvas${posterId}`;
     const canvasHeight = Math.floor((poster.height / poster.width) * CANVAS_WIDTH + FOOTER_HEIGHT);
 
     const ctx = wx.createCanvasContext(canvasId, this);
