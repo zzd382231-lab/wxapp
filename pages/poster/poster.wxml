@@ -1,0 +1,45 @@
+<view class="poster-page">
+  <view class="name-box">
+    <text class="label">用户名</text>
+    <input
+      class="name-input"
+      value="{{userName}}"
+      placeholder="请输入展示名称"
+      bindinput="onNameInput"
+    />
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">海报加载中...</view>
+
+  <view wx:if="{{!loading && !posters.length}}" class="empty">暂无可用海报</view>
+
+  <view wx:for="{{posters}}" wx:key="id" class="poster-card">
+    <image class="poster-img" mode="widthFix" src="{{item.posterUrl}}" />
+
+    <view class="actions">
+      <button
+        class="action-btn primary"
+        data-poster-id="{{item.id}}"
+        data-poster-url="{{item.posterUrl}}"
+        bindtap="onGeneratePoster"
+      >生成名片海报</button>
+      <button
+        class="action-btn"
+        data-poster-id="{{item.id}}"
+        bindtap="onSavePoster"
+      >保存到手机</button>
+    </view>
+
+    <image
+      wx:if="{{generatedPosters[item.id]}}"
+      class="poster-preview"
+      mode="widthFix"
+      src="{{generatedPosters[item.id]}}"
+    />
+
+    <canvas
+      canvas-id="posterCanvas{{item.id}}"
+      style="width:750rpx;height:1400rpx;position:fixed;left:-9999px;top:-9999px;"
+    />
+  </view>
+</view>

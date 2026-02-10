@@ -4,7 +4,8 @@
     "pages/center/center",
     "pages/course/course",
     "pages/login/login",
-    "pages/login/login-phone"
+    "pages/login/login-phone",
+    "pages/poster/poster"
   ],
   "subPackages": [
     {
